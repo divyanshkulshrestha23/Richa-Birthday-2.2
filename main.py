@@ -14,7 +14,6 @@ from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 # import smtplib
 import os
 
-
 '''
 Make sure the required packages are installed: 
 Open the Terminal in PyCharm (bottom left). 
@@ -28,9 +27,8 @@ pip3 install -r requirements.txt
 This will install the packages from the requirements.txt for this project.
 '''
 
-
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get('FLASK_KEY')
+app.config['SECRET_KEY'] = "Divyanshthegr8est"
 ckeditor = CKEditor(app)
 Bootstrap5(app)
 
@@ -112,19 +110,6 @@ class Comment(db.Model):
 
 with app.app_context():
     db.create_all()
-
-
-# Create an admin-only decorator
-def admin_only(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        # If id is not 1 then return abort with 403 error
-        if current_user.id != 1:
-            return abort(403)
-        # Otherwise continue with the route function
-        return f(*args, **kwargs)
-
-    return decorated_function
 
 
 # Register new users into the User database
@@ -219,7 +204,6 @@ def show_post(post_id):
 
 # Use a decorator so only an admin user can create new posts
 @app.route("/new-post", methods=["GET", "POST"])
-@admin_only
 def add_new_post():
     form = CreatePostForm()
     if form.validate_on_submit():
@@ -261,7 +245,6 @@ def edit_post(post_id):
 
 # Use a decorator so only an admin user can delete a post
 @app.route("/delete/<int:post_id>")
-@admin_only
 def delete_post(post_id):
     post_to_delete = db.get_or_404(BlogPost, post_id)
     db.session.delete(post_to_delete)
@@ -277,6 +260,7 @@ def about():
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
     return render_template("contact.html", current_user=current_user)
+
 
 # Optional: You can include the email sending code from Day 60:
 # DON'T put your email and password here directly! The code will be visible when you upload to Github.
